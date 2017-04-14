@@ -83,8 +83,7 @@ def main():
 
     # Forward propagation
     yhat    = forwardprop(X, w_1, w_2)
-    predict = tf.argmax(yhat, axis=1)
-
+    
     # Backward propagation
     cost = tf.reduce_mean(tf.square(y-yhat))
     #Output float values)
@@ -130,6 +129,53 @@ def main():
 
             print("Step = %d, train loss = %.2f"
               % (step + 1, loss))
+            if (numEpochs % 500 == 0 or numEpochs == 1):
+                myvals0 = sess.run(yhat,feed_dict={X:train_X[0:1],y:train_Y[0:1]})[0]
+
+                myvals1 = sess.run(yhat,feed_dict={X:train_X[1:2],y:train_Y[1:2]})[0]
+
+                myvals2 = sess.run(yhat,feed_dict={X:train_X[-2:-1],y:train_Y[-2:-1]})[0]
+
+                print("Outputing trained results")
+                output_file = "save_vals" +str(numEpochs) + ".txt"
+
+                f = open(output_file, 'w')
+                f.write("XValue\nActual\nPredicted\n")
+                #f.write("Train_X:")
+                f.write(str(train_X[0][0]))
+                f.write("\n")
+                #f.write("\n")
+                for item in list(train_Y[0]):
+                    f.write(str(item) + ",")
+                f.write("\n")
+                for item in list(myvals0):
+                    f.write(str(item) + ",")
+                f.write("\n")
+
+                #f.write("Train_X:")
+                f.write(str(train_X[1][0]))
+                #f.write("\n")
+                f.write("\n")
+                for item in list(train_Y[1]):
+                    f.write(str(item) + ",")
+                f.write("\n")
+                for item in list(myvals1):
+                    f.write(str(item) + ",")
+                f.write("\n")
+
+                #f.write("Train_X:")
+                f.write(str(train_X[-1][0]))
+                f.write("\n")
+                for item in list(train_Y[-1]):
+                    f.write(str(item) + ",")
+                f.write("\n")
+                for item in list(myvals2):
+                    f.write(str(item) + ",")
+                f.write("\n")
+
+                f.flush()
+                f.close()
+                #os.exit()
 
     sess.close()
 
