@@ -20,13 +20,18 @@ def init_weights(shape):
     weights = tf.random_normal(shape, stddev=0.1)
     return tf.Variable(weights)
 
-def forwardprop(X, w_1, w_2):
+def forwardprop(X, w_1, w_2,w_3,w_4,w_5,w_6):
     """
     Forward-propagation.
     IMPORTANT: yhat is not softmax since TensorFlow's softmax_cross_entropy_with_logits() does that internally.
     """
     h    = tf.nn.sigmoid(tf.matmul(X, w_1))  # The \sigma function
-    yhat = tf.matmul(h, w_2)  # The \varphi function
+    h1    = tf.nn.sigmoid(tf.matmul(h, w_3))  # The \sigma function
+    h2    = tf.nn.sigmoid(tf.matmul(h1, w_4))
+    h3    = tf.nn.sigmoid(tf.matmul(h2, w_5))
+    h4    = tf.nn.sigmoid(tf.matmul(h3, w_6))
+    
+    yhat = tf.matmul(h4, w_2)  # The \varphi function
     return yhat
 
 def get_iris_data():
@@ -70,7 +75,7 @@ def main():
 
     # Layer's sizes
     x_size = train_X.shape[1]   # Number of input nodes: 4 features and 1 bias
-    h_size = 200                # Number of hidden nodes
+    h_size = 300                # Number of hidden nodes
     y_size = train_Y.shape[1]   # Number of outcomes (3 iris flowers)
 
     # Symbols
@@ -79,34 +84,40 @@ def main():
 
     # Weight initializations
     w_1 = init_weights((x_size, h_size))
+
+    w_3 = init_weights((h_size, h_size))
+    w_4 = init_weights((h_size, h_size))
+    w_5 = init_weights((h_size, h_size))
+    w_6 = init_weights((h_size, h_size))
+
     w_2 = init_weights((h_size, y_size))
 
     # Forward propagation
-    yhat    = forwardprop(X, w_1, w_2)
+    yhat    = forwardprop(X, w_1, w_2,w_3,w_4,w_5,w_6)
     
     # Backward propagation
-    cost = tf.reduce_mean(tf.square(y-yhat))
+    cost = tf.reduce_sum(tf.square(y-yhat))
     #Output float values)
     #cost    = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
-    optimizer = tf.train.RMSPropOptimizer(learning_rate=0.0005, decay=0.5).minimize(cost)
+    optimizer = tf.train.RMSPropOptimizer(learning_rate=0.005, decay=0.5).minimize(cost)
     #updates = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
 
     # Run SGD
     sess = tf.Session()
     init = tf.global_variables_initializer()
     sess.run(init)
-    n_batch = 5
+    n_batch = 2
 
-    n_iter = 100000000000
+    n_iter = 10000000
     step = 0
 
-    numEpochs=5
+    numEpochs=50000
 
     curEpoch=0
     #print("Train x shape: " , train_X.shape)
 
     while curEpoch < numEpochs:
-
+        #print("Step: " , step)
 
         # Train with each example
         #for i in range(len(train_X)):
@@ -117,27 +128,35 @@ def main():
         batch_x = train_X[step * n_batch : (step+1) * n_batch]
         batch_y = train_Y[step * n_batch : (step+1) * n_batch]
         #print("Batch x: " , batch_x)
+        #print("Batch y: " , batch_y)
+        #print("Batch x: " , batch_x)
 
         sess.run(optimizer, feed_dict={X: batch_x, y: batch_y})
 
         loss = sess.run(cost,feed_dict={X:batch_x,y:batch_y})
+        #print("Step:", step, "Loss:",loss)
+        
         step += 1
         if step == int(train_X.shape[0]/n_batch):
-            step = 0
-            numEpochs +=1
-            print("Epoch: " , numEpochs)
-
+            print("Epoch: " , curEpoch+1)
+            print("Loss",loss)
             print("Step = %d, train loss = %.2f"
               % (step + 1, loss))
-            if (numEpochs % 500 == 0 or numEpochs == 1):
-                myvals0 = sess.run(yhat,feed_dict={X:train_X[0:1],y:train_Y[0:1]})[0]
+            step = 0
+            curEpoch +=1
+            
 
-                myvals1 = sess.run(yhat,feed_dict={X:train_X[1:2],y:train_Y[1:2]})[0]
+            if (curEpoch % 10 == 0 or curEpoch == 1):
+                myvals0 = sess.run(yhat,feed_dict={X:train_X[0:1],y:train_Y[0:1]})
+                print("Myvals0:",myvals0)
+                myvals0 = myvals0[0]
+
+                myvals1 = sess.run(yhat,feed_dict={X:train_X[-180:-179],y:train_Y[-180:-179]})[0]
 
                 myvals2 = sess.run(yhat,feed_dict={X:train_X[-2:-1],y:train_Y[-2:-1]})[0]
 
                 print("Outputing trained results")
-                output_file = "save_vals" +str(numEpochs) + ".txt"
+                output_file = "results/save_vals" +str(curEpoch) + ".txt"
 
                 f = open(output_file, 'w')
                 f.write("XValue\nActual\nPredicted\n")
@@ -153,10 +172,10 @@ def main():
                 f.write("\n")
 
                 #f.write("Train_X:")
-                f.write(str(train_X[1][0]))
+                f.write(str(train_X[-180][0]))
                 #f.write("\n")
                 f.write("\n")
-                for item in list(train_Y[1]):
+                for item in list(train_Y[-179]):
                     f.write(str(item) + ",")
                 f.write("\n")
                 for item in list(myvals1):

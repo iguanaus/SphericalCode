@@ -26,29 +26,68 @@ def read_file(filename):
 	num3 = float(fo.readline())
 	a3 = [float(x) for x in fo.readline()[:-2].split(',')]
 	p3 = [float(x) for x in fo.readline()[:-2].split(',')]
-
+	print("A3:",a3)
 	return num1,a1,p1,num2,a2,p2,num3,a3,p3	
 
-#Now we need to run import
-iterations = 500
-
-num1,a1,p1,num2,a2,p2,num3,a3,p3 = read_file("save_vals"+str(iterations)+".txt")
 legend = []
 
-legend.append(str(num1)+"_actual")
-legend.append(str(num1)+"_predicted")
-plt.plot(a1)
-plt.plot(p1)
-
-legend.append(str(num2)+"_actual")
-legend.append(str(num2)+"_predicted")
-plt.plot(a2)
-plt.plot(p2)
-
-legend.append(str(num3)+"_actual")
+#Now we need to run import
+iterations = 100
+num3 = iterations
+legend.append("100nm_actual")
 legend.append(str(num3)+"_predicted")
+num1,a1,p1,num2,a2,p2,num3,a3,p3 = read_file("save_vals"+str(iterations)+".txt")
+
+
 plt.plot(a3)
 plt.plot(p3)
+
+iterations = 1000
+num3 = iterations
+legend.append(str(num3)+"_predicted")
+num1,a1,p1,num2,a2,p2,num3,a3,p3 = read_file("save_vals"+str(iterations)+".txt")
+#legend.append(str(num3)+"_actual")
+
+#plt.plot(a3)
+plt.plot(p3)
+iterations = 5000
+num3 = iterations
+legend.append(str(num3)+"_predicted")
+num1,a1,p1,num2,a2,p2,num3,a3,p3 = read_file("save_vals"+str(iterations)+".txt")
+#legend.append(str(num3)+"_actual")
+
+#plt.plot(a3)
+plt.plot(p3)
+iterations = 16500
+num3 = iterations
+legend.append(str(num3)+"_predicted")
+num1,a1,p1,num2,a2,p2,num3,a3,p3 = read_file("save_vals"+str(iterations)+".txt")
+#legend.append(str(num3)+"_actual")
+
+#plt.plot(a3)
+plt.plot(p3)
+iterations = 26000
+num3 = iterations
+legend.append(str(num3)+"_predicted")
+num1,a1,p1,num2,a2,p2,num3,a3,p3 = read_file("save_vals"+str(iterations)+".txt")
+#legend.append(str(num3)+"_actual")
+
+#plt.plot(a3)
+plt.plot(p3)
+
+
+
+#legend.append(str(num1)+"_actual")
+#legend.append(str(num1)+"_predicted")
+#plt.plot(a1)
+#plt.plot(p1)
+
+#legend.append(str(num2)+"_actual")
+#legend.append(str(num2)+"_predicted")
+#plt.plot(a2)
+#plt.plot(p2)
+
+
 
 
 
