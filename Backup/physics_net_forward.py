@@ -83,17 +83,10 @@ def get_data(test_file="test.csv",file_val="test_val.csv"):
     #train_Y = np.array([[2,2],[3,3],[4,4],[5,5],[6,6]])
     return new_train_X, new_train_Y 
 
-def gen_data_first(test_file="test.csv"):
-    train_X = np.reshape(np.transpose(np.genfromtxt('test_val.csv', delimiter=',')),(-1,1))
-    train_Y = np.array([np.transpose(np.genfromtxt('test.csv', delimiter=','))[-1]])
-    print(train_X,train_Y)
-    return train_X, train_Y
 
 
 def main():
-    #train_X, train_Y = get_data()
-    train_X, train_Y = gen_data_first()
-
+    train_X, train_Y = get_data()
     #print("Train_X: " , train_X)
     #os.exit()
 
@@ -105,11 +98,7 @@ def main():
     y_size = train_Y.shape[1]   # Number of outcomes (3 iris flowers)
 
     # Symbols
-    #X = tf.placeholder("float", shape=[None, x_size])
-    #X = tf.Variable()
-
-    X = tf.get_variable(name="b1", shape=[1,1], initializer=tf.constant_initializer(105))
-
+    X = tf.placeholder("float", shape=[None, x_size])
     y = tf.placeholder("float", shape=[None, y_size])
 
     # Weight initializations
@@ -156,19 +145,19 @@ def main():
     cost = tf.reduce_sum(tf.square(y-yhat))
     #Output float values)
     #cost    = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
-    optimizer = tf.train.RMSPropOptimizer(learning_rate=0.00005, decay=0.9).minimize(cost,var_list=[X])
+    optimizer = tf.train.RMSPropOptimizer(learning_rate=0.00005, decay=0.9).minimize(cost)
     #updates = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
 
     # Run SGD
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
-        n_batch = 1
+        n_batch = 50
 
         n_iter = 10000000
         step = 0
 
-        numEpochs=500
+        numEpochs=50000
 
         curEpoch=0
         #print("Train x shape: " , train_X.shape)
@@ -178,28 +167,33 @@ def main():
         start_time=time.time()
         print("========                         Iterations started                  ========")
 
-        print("Train y: " , train_Y)
+
 
         while curEpoch < numEpochs:
 
-            #batch_x = train_X[step * n_batch : (step+1) * n_batch]
-            batch_y = train_Y#[step * n_batch : (step+1) * n_batch]
-            sess.run(optimizer, feed_dict={y: batch_y})
-            loss = sess.run(cost,feed_dict={y:batch_y})
+            batch_x = train_X[step * n_batch : (step+1) * n_batch]
+            batch_y = train_Y[step * n_batch : (step+1) * n_batch]
+            sess.run(optimizer, feed_dict={X: batch_x, y: batch_y})
+            loss = sess.run(cost,feed_dict={X:batch_x,y:batch_y})
             cum_loss += loss        
             step += 1
-            #print("Step: " , step)
-            #print("Loss: " , loss)
-            if step == 100:
+            if step == int(train_X.shape[0]/n_batch):
                 step = 0
                 curEpoch +=1            
                 f2.write(str(float(cum_loss))+str("\n"))
                 if (curEpoch % 100 == 0 or curEpoch == 1):
-                    myvals0 = sess.run(yhat,feed_dict={y:batch_y})
+                    myvals0 = sess.run(yhat,feed_dict={X:batch_x,y:batch_y})
                     print("Epoch: " + str(curEpoch+1) + " : Loss: " + str(cum_loss))
-                    print(myvals0)
+                    myvals0 = sess.run(yhat,feed_dict={X:train_X[0:1],y:train_Y[0:1]})
+                    print("Myvals0:",myvals0)
+                    print("Batch y: " , train_Y[0:1])
+                    print(myvals0-train_Y[0:1])
+                    myvals0 = myvals0[0]
+                    myvals1 = sess.run(yhat,feed_dict={X:train_X[-180:-179],y:train_Y[-180:-179]})[0]
+                    myvals2 = sess.run(yhat,feed_dict={X:train_X[-2:-1],y:train_Y[-2:-1]})[0]
+                    f2.flush()
                 cum_loss = 0
-        #print(w_1)
+        print(w_1)
         weight_1 = w_1.eval()
         weight_2 = w_2.eval()
         weight_3 = w_3.eval()
@@ -208,13 +202,12 @@ def main():
         weight_6 = w_6.eval()
         print(weight_1)
         print(np.array(weight_1))
-        print(X.eval())
-        # np.savetxt("results/w_1.txt",weight_1,delimiter=',')
-        # np.savetxt("results/w_2.txt",weight_2,delimiter=',')
-        # np.savetxt("results/w_3.txt",weight_3,delimiter=',')
-        # np.savetxt("results/w_4.txt",weight_4,delimiter=',')
-        # np.savetxt("results/w_5.txt",weight_5,delimiter=',')
-        # np.savetxt("results/w_6.txt",weight_6,delimiter=',')
+        np.savetxt("results/w_1.txt",weight_1,delimiter=',')
+        np.savetxt("results/w_2.txt",weight_2,delimiter=',')
+        np.savetxt("results/w_3.txt",weight_3,delimiter=',')
+        np.savetxt("results/w_4.txt",weight_4,delimiter=',')
+        np.savetxt("results/w_5.txt",weight_5,delimiter=',')
+        np.savetxt("results/w_6.txt",weight_6,delimiter=',')
 
 
 

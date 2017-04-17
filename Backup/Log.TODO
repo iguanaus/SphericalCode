@@ -1,0 +1,38 @@
+output_file = "results/save_vals" +str(curEpoch) + ".txt"
+
+                f = open(output_file, 'w')
+                f.write("XValue\nActual\nPredicted\n")
+                #f.write("Train_X:")
+                f.write(str(train_X[0][0]))
+                f.write("\n")
+                #f.write("\n")
+                for item in list(train_Y[0]):
+                    f.write(str(item) + ",")
+                f.write("\n")
+                for item in list(myvals0):
+                    f.write(str(item) + ",")
+                f.write("\n")
+
+                #f.write("Train_X:")
+                f.write(str(train_X[-180][0]))
+                #f.write("\n")
+                f.write("\n")
+                for item in list(train_Y[-179]):
+                    f.write(str(item) + ",")
+                f.write("\n")
+                for item in list(myvals1):
+                    f.write(str(item) + ",")
+                f.write("\n")
+
+                #f.write("Train_X:")
+                f.write(str(train_X[-1][0]))
+                f.write("\n")
+                for item in list(train_Y[-1]):
+                    f.write(str(item) + ",")
+                f.write("\n")
+                for item in list(myvals2):
+                    f.write(str(item) + ",")
+                f.write("\n")
+
+                f.flush()
+                f.close()
