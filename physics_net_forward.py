@@ -15,10 +15,10 @@ import time
 
 RANDOM_SEED = 42
 tf.set_random_seed(RANDOM_SEED)
-cum_loss_file = "long_net_5x20.txt"
+cum_loss_file = "large_complex_net_5x20.txt"
 resuse_weights = False
-data_test_file= "data/test_large.csv"
-data_train_file= "data/test_large_val.csv"
+data_test_file= "data/test_large_complex.csv"
+data_train_file= "data/test_large_complex_val.csv"
 
 
 def init_weights(shape):
@@ -47,18 +47,22 @@ def forwardprop(X, w_1, w_2,w_3,w_4,w_5,w_6):
 #c c c c c       5 5 5 5 5
 
 def get_data(test_file="data/test.csv",file_val="data/test_val.csv"):
-    #trainX = np.array([])
-    train_X = np.reshape(np.transpose(np.genfromtxt(file_val, delimiter=',')),(-1,1))
+
+    #train_X = np.reshape(np.transpose(np.genfromtxt(file_val, delimiter=',')),(-1,1)) #THis is for single input
+    train_X = np.genfromtxt(file_val, delimiter=',') #This is for list input
 
     train_Y = np.transpose(np.genfromtxt(test_file, delimiter=','))
 
     #print(train_Y[0])
 
+    print("Train X Shape: " , train_X.shape)
+
     indices = np.random.permutation(train_X.shape[0]) #This gives us the ordering
     new_train_X = []
     new_train_Y = []
     for ele in indices:
-        new_train_X.append([train_X[ele][0]])
+        #new_train_X.append([train_X[ele][0]])#This is for single inputs. 
+        new_train_X.append(list(train_X[ele]))#This is for a list of inputs
         new_train_Y.append(list(train_Y[ele]))
 
     new_train_X = np.array(new_train_X)
@@ -147,10 +151,11 @@ def main():
         print("========                         Iterations started                  ========")
 
 
-
+        #print("Train X: " , train_X)
         while curEpoch < numEpochs:
 
             batch_x = train_X[step * n_batch : (step+1) * n_batch]
+            #print("Batch X: " , batch_x)
             batch_y = train_Y[step * n_batch : (step+1) * n_batch]
             sess.run(optimizer, feed_dict={X: batch_x, y: batch_y})
             loss = sess.run(cost,feed_dict={X:batch_x,y:batch_y})
@@ -168,7 +173,7 @@ def main():
                     #print("Batch y: " , train_Y[0:1])
                     #print("Residuals:", myvals0-train_Y[0:1])
                     myvals0 = myvals0[0]
-                    myvals1 = sess.run(yhat,feed_dict={X:train_X[-180:-179],y:train_Y[-180:-179]})[0]
+                    #myvals1 = sess.run(yhat,feed_dict={X:train_X[-180:-179],y:train_Y[-180:-179]})[0] #Large dim inputs
                     myvals2 = sess.run(yhat,feed_dict={X:train_X[-2:-1],y:train_Y[-2:-1]})[0]
                     f2.flush()
                 cum_loss = 0

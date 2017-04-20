@@ -15,9 +15,10 @@ import time
 
 RANDOM_SEED = 42
 tf.set_random_seed(RANDOM_SEED)
-cum_loss_file = "cum_loss_5x20_long_rerun.txt"
+cum_loss_file = "long_net_5x20_rerun_two.txt"
 resuse_weights = True
-
+data_test_file= "data/test_large_single.csv"
+data_train_file= "data/test_large_single_val.csv"
 
 def init_weights(shape):
     """ Weight initialization """
@@ -84,8 +85,8 @@ def get_data(test_file="test.csv",file_val="test_val.csv"):
     return new_train_X, new_train_Y 
 
 def gen_data_first(test_file="test.csv"):
-    train_X = np.reshape(np.transpose(np.genfromtxt('test_val.csv', delimiter=',')),(-1,1))
-    train_Y = np.array([np.transpose(np.genfromtxt('test.csv', delimiter=','))[-1]])
+    train_X = np.reshape(np.transpose(np.genfromtxt(data_train_file, delimiter=',')),(-1,1))
+    train_Y = np.array([np.transpose(np.genfromtxt(data_test_file, delimiter=','))]) #37
     print(train_X,train_Y)
     return train_X, train_Y
 
@@ -93,6 +94,9 @@ def gen_data_first(test_file="test.csv"):
 def main():
     #train_X, train_Y = get_data()
     train_X, train_Y = gen_data_first()
+
+    #print("Train ")
+    print("It should be: " , train_X)
 
     #print("Train_X: " , train_X)
     #os.exit()
@@ -108,7 +112,7 @@ def main():
     #X = tf.placeholder("float", shape=[None, x_size])
     #X = tf.Variable()
 
-    X = tf.get_variable(name="b1", shape=[1,1], initializer=tf.constant_initializer(105))
+    X = tf.get_variable(name="b1", shape=[1,1], initializer=tf.constant_initializer(23.5393))
 
     y = tf.placeholder("float", shape=[None, y_size])
 
@@ -156,7 +160,7 @@ def main():
     cost = tf.reduce_sum(tf.square(y-yhat))
     #Output float values)
     #cost    = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
-    optimizer = tf.train.RMSPropOptimizer(learning_rate=0.00005, decay=0.9).minimize(cost,var_list=[X])
+    optimizer = tf.train.RMSPropOptimizer(learning_rate=0.000005, decay=0.9).minimize(cost,var_list=[X])
     #updates = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
 
     # Run SGD
@@ -168,7 +172,7 @@ def main():
         n_iter = 10000000
         step = 0
 
-        numEpochs=500
+        numEpochs=1000
 
         curEpoch=0
         #print("Train x shape: " , train_X.shape)
@@ -197,7 +201,7 @@ def main():
                 if (curEpoch % 100 == 0 or curEpoch == 1):
                     myvals0 = sess.run(yhat,feed_dict={y:batch_y})
                     print("Epoch: " + str(curEpoch+1) + " : Loss: " + str(cum_loss))
-                    print(myvals0)
+                    print(myvals0-batch_y)
                 cum_loss = 0
         #print(w_1)
         weight_1 = w_1.eval()
