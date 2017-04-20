@@ -232,6 +232,21 @@ cum_loss_5x20_long.txt (rerun)
   Now I need to generate the y data that is fixed. 
 
 
+large_complex_net_5x20.txt
+  Used larger dataset
+  init: stddev at 0.1
+  LR: 0.00005
+  decay: 0.9
+    RMS prop
+  200 batch
+  100,000 epochs
+  5 layers (20 neurons per) (1,820)
+  1 input, 100 output
+
+  Got it down to ~200
+  This took 4538.9797399seconds.
+  We are now going to test it. 
+
 
 
 

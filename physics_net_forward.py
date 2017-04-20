@@ -15,10 +15,15 @@ import time
 
 RANDOM_SEED = 42
 tf.set_random_seed(RANDOM_SEED)
-cum_loss_file = "large_complex_net_5x20.txt"
+cum_loss_file = "small_fixed_net_5x20.txt"
 resuse_weights = False
-data_test_file= "data/test_large_complex.csv"
-data_train_file= "data/test_large_complex_val.csv"
+data_test_file= "data/test_small_fixed.csv"
+data_train_file= "data/test_small_fixed_val.csv"
+n_batch = 100
+numEpochs=50000
+output_weights_folder = "results/"
+lr_rate = 0.00005
+lr_decay = 0.9
 
 
 def init_weights(shape):
@@ -128,19 +133,17 @@ def main():
     cost = tf.reduce_sum(tf.square(y-yhat))
     #Output float values)
     #cost    = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
-    optimizer = tf.train.RMSPropOptimizer(learning_rate=0.00005, decay=0.9).minimize(cost)
+    optimizer = tf.train.RMSPropOptimizer(learning_rate=lr_rate, decay=lr_decay).minimize(cost)
     #updates = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
 
     # Run SGD
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
-        n_batch = 200
 
         n_iter = 10000000
         step = 0
 
-        numEpochs=50000
 
         curEpoch=0
         #print("Train x shape: " , train_X.shape)
@@ -186,12 +189,12 @@ def main():
         weight_6 = w_6.eval()
         #print(weight_1)
         #print(np.array(weight_1))
-        np.savetxt("results/w_1.txt",weight_1,delimiter=',')
-        np.savetxt("results/w_2.txt",weight_2,delimiter=',')
-        np.savetxt("results/w_3.txt",weight_3,delimiter=',')
-        np.savetxt("results/w_4.txt",weight_4,delimiter=',')
-        np.savetxt("results/w_5.txt",weight_5,delimiter=',')
-        np.savetxt("results/w_6.txt",weight_6,delimiter=',')
+        np.savetxt(output_weights_folder +"w_1.txt",weight_1,delimiter=',')
+        np.savetxt(output_weights_folder +"w_2.txt",weight_2,delimiter=',')
+        np.savetxt(output_weights_folder +"w_3.txt",weight_3,delimiter=',')
+        np.savetxt(output_weights_folder +"w_4.txt",weight_4,delimiter=',')
+        np.savetxt(output_weights_folder +"w_5.txt",weight_5,delimiter=',')
+        np.savetxt(output_weights_folder +"w_6.txt",weight_6,delimiter=',')
 
 
 
