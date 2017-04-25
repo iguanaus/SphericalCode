@@ -15,10 +15,11 @@ import time
 
 RANDOM_SEED = 42
 tf.set_random_seed(RANDOM_SEED)
-cum_loss_file = "long_complex_net_5x20_rerun_two.txt"
+cum_loss_file = "short_fixed_net_5x20.txt"
 resuse_weights = True
-data_test_file= "data/test_large_complex_single.csv"
-data_train_file= "data/test_large_complex_single_val.csv"
+data_test_file= "data/test_large_fixed_single_three.csv"
+data_train_file= "data/test_large_fixed_single_three_val.csv"
+init_list =[30,30]
 
 def init_weights(shape):
     """ Weight initialization """
@@ -65,7 +66,10 @@ def get_data(test_file="test.csv",file_val="test_val.csv"):
     new_train_X = []
     new_train_Y = []
     for ele in indices:
-        new_train_X.append(list(train_X[ele][0]))
+        #For multiple
+        new_train_X.append(list(train_X[ele]))
+        #For single
+        #new_train_X.append(list(train_X[ele][0]))
         new_train_Y.append(list(train_Y[ele]))
     
     #print("New train X: " , new_train_X)
@@ -117,7 +121,7 @@ def main():
     #X = tf.placeholder("float", shape=[None, x_size])
     #X = tf.Variable()
 
-    X = tf.get_variable(name="b1", shape=[1,4], initializer=tf.constant_initializer([42.31,2,19.10,1]))
+    X = tf.get_variable(name="b1", shape=[1,2], initializer=tf.constant_initializer(init_list))
 
     #print("X: " , X)
 
@@ -125,15 +129,15 @@ def main():
 
     # Weight initializations
     if resuse_weights:
-        weight_1 = np.array([np.loadtxt("results/ComplexNetworkWeights/w_1.txt",delimiter=',')])[0]
+        weight_1 = np.array([np.loadtxt("results/FixedTwoNetwork/w_1.txt",delimiter=',')])[0]
         #print("Weight 1: " , weight_1)
         #print("Weight 1: " , weight_1)
-        weight_2 = np.loadtxt("results/ComplexNetworkWeights/w_2.txt",delimiter=',')
+        weight_2 = np.loadtxt("results/FixedTwoNetwork/w_2.txt",delimiter=',')
         #print("Weight 2: " , weight_2)
-        weight_3 = np.loadtxt("results/ComplexNetworkWeights/w_3.txt",delimiter=',')
-        weight_4 = np.loadtxt("results/ComplexNetworkWeights/w_4.txt",delimiter=',')
-        weight_5 = np.loadtxt("results/ComplexNetworkWeights/w_5.txt",delimiter=',')
-        weight_6 = np.loadtxt("results/ComplexNetworkWeights/w_6.txt",delimiter=',')
+        weight_3 = np.loadtxt("results/FixedTwoNetwork/w_3.txt",delimiter=',')
+        weight_4 = np.loadtxt("results/FixedTwoNetwork/w_4.txt",delimiter=',')
+        weight_5 = np.loadtxt("results/FixedTwoNetwork/w_5.txt",delimiter=',')
+        weight_6 = np.loadtxt("results/FixedTwoNetwork/w_6.txt",delimiter=',')
         w_1 = tf.Variable(weight_1,dtype=tf.float32)
         #print(w_1)
         w_2 = tf.Variable(weight_2,dtype=tf.float32)

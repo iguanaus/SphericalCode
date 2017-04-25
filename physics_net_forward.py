@@ -15,14 +15,14 @@ import time
 
 RANDOM_SEED = 42
 tf.set_random_seed(RANDOM_SEED)
-cum_loss_file = "small_fixed_net_5x20.txt"
+cum_loss_file = "large_fixed_four.txt"
 resuse_weights = False
-data_test_file= "data/test_small_fixed.csv"
-data_train_file= "data/test_small_fixed_val.csv"
-n_batch = 100
-numEpochs=50000
-output_weights_folder = "results/"
-lr_rate = 0.00005
+data_test_file= "data/test_large_fixed_five.csv"
+data_train_file= "data/test_large_fixed_five_val.csv"
+n_batch = 500
+numEpochs=500000
+output_weights_folder = "results/Large_Four/"
+lr_rate = 0.0005
 lr_decay = 0.9
 
 

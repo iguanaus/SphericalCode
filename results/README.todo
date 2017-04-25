@@ -1,3 +1,11 @@
+DataReadMe:
+  test_large_fixed_fve:
+      This is the generated for 4 radi, gold core. 10-40, step size 2.
+      65,000 examples.
+
+
+
+
 cum_loss4x300.txt
   LR: 0.005
   decay 0.5
