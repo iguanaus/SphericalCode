@@ -15,13 +15,13 @@ import time
 
 RANDOM_SEED = 42
 tf.set_random_seed(RANDOM_SEED)
-cum_loss_file = "large_fixed_four.txt"
+cum_loss_file = "dieletric_loss_one.txt"
 resuse_weights = False
-data_test_file= "data/test_large_fixed_five.csv"
-data_train_file= "data/test_large_fixed_five_val.csv"
-n_batch = 500
-numEpochs=500000
-output_weights_folder = "results/Large_Four/"
+data_test_file= "data/dielectric_spectrums_four.csv"
+data_train_file= "data/dielectric_spectrums_four_val.csv"
+output_weights_folder = "results/Dielectric_Four/"
+n_batch = 100
+numEpochs=5000
 lr_rate = 0.0005
 lr_decay = 0.9
 
@@ -165,10 +165,11 @@ def main():
             cum_loss += loss        
             step += 1
             if step == int(train_X.shape[0]/n_batch):
+                print("Loss: " , loss)
                 step = 0
                 curEpoch +=1            
                 f2.write(str(float(cum_loss))+str("\n"))
-                if (curEpoch % 100 == 0 or curEpoch == 1):
+                if (curEpoch % 10 == 0 or curEpoch == 1):
                     myvals0 = sess.run(yhat,feed_dict={X:batch_x,y:batch_y})
                     print("Epoch: " + str(curEpoch+1) + " : Loss: " + str(cum_loss))
                     myvals0 = sess.run(yhat,feed_dict={X:train_X[0:1],y:train_Y[0:1]})
